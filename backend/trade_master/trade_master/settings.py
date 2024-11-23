@@ -16,7 +16,7 @@ from django.core.management.utils import get_random_secret_key
 from dotenv import load_dotenv
 import boto3
 from botocore.client import Config
-
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +25,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 dotenv_file = BASE_DIR / ".env"
 if path.isfile(dotenv_file):
     load_dotenv(dotenv_file)
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -37,7 +36,6 @@ SECRET_KEY = getenv('DJANGO_SECRET_KEY', get_random_secret_key())
 DEBUG = getenv('DEBUG', 'False') == "True"
 
 ALLOWED_HOSTS = getenv('ALLOWED_HOSTS', '').split(',')
-
 
 # Application definition
 
@@ -62,6 +60,23 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# TO-DO Documentar
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=30),  # Duración del access token
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),  # Duración del refresh token (si lo usas)
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+    # Otras configuraciones...
+}
+
+# TO-DO Documentar
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    # Otras configuraciones...
+}
 
 ROOT_URLCONF = 'trade_master.urls'
 
