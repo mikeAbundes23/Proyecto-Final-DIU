@@ -74,7 +74,7 @@ En una terminal, instalar las dependencias necesarias para correr el Front-End: 
 
 ## Base de Datos
 
-Se encuentra en la siguiente página de [Neon](https://neon.tech/), donde con el ***correo:*** `trademaster233@gmail.com` y la ***contraseña:*** `TradeMaster23#DIU` se puede ver toda la estructura de la Base de Datos (Para iniciar sesión, se ingresar como cuenta de Google).
+Se encuentra en la siguiente página de [Neon](https://neon.tech/), donde con el ***correo:*** `trademaster233@gmail.com` y la ***contraseña:*** `TradeMaster23#DIU` se puede ver toda la estructura de la Base de Datos (para iniciar sesión, se ingresar como cuenta de Google).
 
 ## Ejecución del Proyecto
 
