@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 
 from comic.models import Comic, WishList
 from user.models import User
-from comic.api.serializers import ComicSerializer, WishListSerializer, MyWishListSerializer
+from comic.api.serializers import WishListSerializer, MyWishListSerializer
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])

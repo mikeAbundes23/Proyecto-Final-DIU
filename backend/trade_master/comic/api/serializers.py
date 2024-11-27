@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from comic.models import Comic, WishList, TradeOffer
+from user.api.serializers import UserSerializer, UserShortSerializer
 
 class ComicSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,3 +18,18 @@ class MyWishListSerializer(serializers.ModelSerializer):
     class Meta:
         model = WishList
         fields = ['id','comic']
+        
+class TradeOfferSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TradeOffer
+        fields = '__all__'
+        
+class TradeOfferDetailSerializer(serializers.ModelSerializer):
+    comic = ComicSerializer()
+    seller = UserShortSerializer()
+    trader = UserShortSerializer()
+    
+    class Meta:
+        model = TradeOffer
+        fields = '__all__'
+        
