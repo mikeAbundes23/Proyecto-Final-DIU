@@ -1,23 +1,35 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
-
+from rest_framework_simplejwt.tokens import AccessToken
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.shortcuts import get_object_or_404
 
 from comic.models import Comic
 from user.models import User
-
-from rest_framework_simplejwt.tokens import AccessToken
-from rest_framework.permissions import IsAuthenticated, AllowAny
-
 from comic.api.serializers import ComicSerializer
-
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_comics(request):
     try:
         comics = Comic.objects.all()
+        
+        if not comics:
+            return Response({"message": "No comics found"}, status=status.HTTP_200_OK)
+        
+        comics_serializer = ComicSerializer(comics, many=True)
+        return Response({"data" : comics_serializer.data}, status=status.HTTP_200_OK)
+        
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def my_comics(request):
+    try:
+        user = get_object_or_404(User, id=request.user.id)
+        comics = Comic.objects.filter(seller=user)
         
         if not comics:
             return Response({"message": "No comics found"}, status=status.HTTP_200_OK)
@@ -100,5 +112,4 @@ def delete_comic(request, comic_id):
         return Response({"message": "Comic deleted successfully"}, status=status.HTTP_200_OK)
         
     except Exception as e:
-        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)     
