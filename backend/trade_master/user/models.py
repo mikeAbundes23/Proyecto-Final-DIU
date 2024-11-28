@@ -12,6 +12,7 @@ class User(AbstractBaseUser , PermissionsMixin):
     username = models.CharField(max_length=255, unique=True, null=False)
     email = models.EmailField(max_length=255, unique=True, null=False)
     password = models.CharField(max_length=255, null=False)
+    phone = models.CharField(max_length=255, null=True)
       
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email', 'name', 'last_name']
