@@ -64,7 +64,7 @@ const LoginModal = ({ show, handleClose, setShowSignUp }) => {
 
       navigate('/user');
     } catch (error) {
-      swalMessages.errorMessage('Credenciales incorrectas Inténtalo nuevamente');
+      swalMessages.errorMessage('Credenciales incorrectas<br>Inténtalo nuevamente');
       console.error('Error en handleSubmit: ', error);
     }
   };

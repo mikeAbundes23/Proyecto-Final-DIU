@@ -38,7 +38,7 @@ const SignUpModal = ({ show, handleClose, setShowLogin }) => {
 
     // Validamos que las contraseñas coincidan
     if (password !== confirmPassword) {
-      swalMessages.errorMessage('Las contraseñas no coinciden Inténtalo nuevamente');
+      swalMessages.errorMessage('Las contraseñas no coinciden<br>Inténtalo nuevamente');
       return;
     }
 
@@ -72,7 +72,7 @@ const SignUpModal = ({ show, handleClose, setShowLogin }) => {
         setShowLogin(true);
       }
     } catch (error) {
-      swalMessages.errorMessage('No se pudo completar el registro Por favor, inténtalo nuevamente');
+      swalMessages.errorMessage("No se pudo completar el registro<br>Por favor, inténtalo nuevamente");
       console.error('Error en handleSubmit: ', error);
     }
   };
@@ -195,7 +195,25 @@ const SignUpModal = ({ show, handleClose, setShowLogin }) => {
               aria-label="Teléfono"
               aria-describedby="phone-addon"
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              onChange={(e) => {
+                // Solo se permiten números
+                const value = e.target.value.replace(/\D/g, '');
+                // Limitamos a 9 dígitos
+                if (value.length <= 10) {
+                  setPhone(value);
+                }
+              }}
+              onKeyDown={(e) => {
+                // Así prevenimos la entrada de teclas que no sean números, backspace, delete, tab, enter
+                const allowedKeys = ['Backspace', 'Delete', 'Tab', 'Enter', 'ArrowLeft', 'ArrowRight'];
+                if (!allowedKeys.includes(e.key) && !/\d/.test(e.key)) {
+                  swalMessages.errorMessage("Sólo se permiten dígitos (0-9)");
+                  e.preventDefault();
+                }
+              }}
+              pattern="[0-9]{10}"
+              title="Debe ingresar un número de teléfono válido de 10 dígitos"
+              maxLength={10}
               required
             />
           </div>

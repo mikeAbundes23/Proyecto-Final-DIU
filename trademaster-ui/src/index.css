@@ -175,3 +175,17 @@ input:focus {
   color: #2D38D2;
   font-weight: bold;
 }
+
+/* SwalMessages */
+.swal2-container {
+  z-index: 10000 !important;
+}
+
+.swal2-toast {
+  z-index: 10001 !important;
+}
+
+/* Solo para asegurar que los toasts aparezcan sobre el modal */
+.swal2-container.swal2-top-end {
+  z-index: 10000 !important;
+}
