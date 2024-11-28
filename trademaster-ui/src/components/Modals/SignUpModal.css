@@ -1,0 +1,12 @@
+.span-btn-close-signup {
+    margin-left: 56% !important;
+}
+
+#name,
+#email,
+#password,
+#confirmPassword,
+#phone,
+#username {
+    border: 2px solid #DADADA !important;
+}
