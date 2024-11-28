@@ -21,13 +21,16 @@ const UserButtons = ({ handleLogout }) => {
 
     <div className='user-buttons'>
       {/* Botón de Publicar comic */}
-      <button className="icon-button" >
-        <img src={plusIcon} alt="..." className="icon-plus" />
-      </button>
+      <div className='comic-post'>
+        <span className='post-text' >Publicar comic</span>
+        <button className="icon-button" >
+          <img src={plusIcon} alt="..." className="icon-plus" />
+        </button>
+      </div>
 
       {/* Botón de Usuario */}
       <Dropdown id="dropdown-user" show={showUserDropdown} align="end">
-        <Dropdown.Toggle as="div" className="icon-button" onClick={toggleUserDropdown}>
+        <Dropdown.Toggle as="div" className="user-drop" onClick={toggleUserDropdown}>
           <img src={userIcon} alt="userconfig" className="icon-user" />
         </Dropdown.Toggle>
 
