@@ -10,7 +10,7 @@ from user.models import User
 from comic.api.serializers import ComicSerializer
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def get_comics(request):
     try:
         comics = Comic.objects.all()

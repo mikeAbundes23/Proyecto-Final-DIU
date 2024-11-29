@@ -42,13 +42,21 @@ def create_trade_offer(request, comic_id):
 @permission_classes([IsAuthenticated])
 def get_trade_offers(request):
     try:
-        trade_offers = TradeOffer.objects.filter(seller=request.user) # Get all trade offers where the user is the seller
         
-        if not trade_offers:
+        # Trade offers where the user is the trader or the seller
+        trade_offers_as_seller  = TradeOffer.objects.filter(seller=request.user)
+        trade_offers_as_trader = TradeOffer.objects.filter(trader=request.user)
+        
+        if not trade_offers_as_seller and not trade_offers_as_trader:
             return Response({"message": "No trade offers found"}, status=status.HTTP_200_OK)
         
-        trade_offers_serializer = TradeOfferDetailSerializer(trade_offers, many=True)
-        return Response({"data" : trade_offers_serializer.data}, status=status.HTTP_200_OK)
+        
+        trade_offers_as_seller_serializer = TradeOfferDetailSerializer(trade_offers_as_seller, many=True)
+        trade_offers_as_trader_serializer = TradeOfferDetailSerializer(trade_offers_as_trader, many=True)
+        return Response({"data" : {
+            "trade_offers_as_seller": trade_offers_as_seller_serializer.data,
+            "trade_offers_as_trader": trade_offers_as_trader_serializer.data
+            }}, status=status.HTTP_200_OK)
         
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -65,6 +73,7 @@ def get_trade_offer(request, trade_offer_id):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
+#TODO: rechazar las otras ofertas cuando se acepta una
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def trade_offer_update(request, trade_offer_id):
