@@ -57,6 +57,8 @@ def get_comic(request, comic_id):
 def create_comic(request):
     try:
         comic_data = request.data
+        print(comic_data)
+        
         user = get_object_or_404(User, id=request.user.id)
         
         comic_data['seller'] = user.id
