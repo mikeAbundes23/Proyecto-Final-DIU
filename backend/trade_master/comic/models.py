@@ -28,7 +28,7 @@ class TradeOffer(models.Model):
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='trade_offers_seller')
     trader = models.ForeignKey(User, on_delete=models.CASCADE, related_name='trade_offers_trader')
     status = models.IntegerField(default=0)  # 0: Pending, 1: Accepted, 2: Rejected
-    #image = models.ImageField(upload_to='trade_images/', blank=True, null=True)
+    image = models.ImageField(upload_to='trade_images/', blank=True, null=True)
     
     def __str__(self):
         return f"Service: {self.service}, Title: {self.title}, Description: {self.description}, Status: {self.status}, Seller: {self.seller}, Trader: {self.trader}"

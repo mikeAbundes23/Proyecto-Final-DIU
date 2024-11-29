@@ -53,15 +53,15 @@ def get_comic(request, comic_id):
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def create_comic(request):
     try:
         comic_data = request.data
         print(comic_data)
         
-        user = get_object_or_404(User, id=request.user.id)
+        #user = get_object_or_404(User, id=request.user.id)
         
-        comic_data['seller'] = user.id
+        comic_data['seller'] = 2
 
         comic_serializer = ComicSerializer(data=comic_data)
         
