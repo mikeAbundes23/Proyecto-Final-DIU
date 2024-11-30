@@ -12,6 +12,7 @@ import logo from '../../images/Logo.png';
 import registerIcon from '../../images/register.png';
 import loginIcon from '../../images/login.png';
 import searchIcon from '../../images/search.png';
+import comicsIcon from '../../images/book.png';
 
 // Importamos los modales de Login y Registro
 import LoginModal from '../Modals/LoginModal';
@@ -48,49 +49,71 @@ const Navbar = () => {
     return (
     
         <>
-            <nav className="navbar-container">
-                {/* Logo de la página */}
-                <div className="navbar-logo">
-                    <a href='/'>
-                        <img src={logo} alt="..." className="logo" />
-                    </a>
-                </div>
+            {!isAuthenticated ? (
+                <nav className="navbar-container">
+                    <div className='navbar-no-auth'>
+                        {/* Logo de la página */}
+                        <div className="navbar-logo">
+                            <a href='/'>
+                                <img src={logo} alt="..." className="logo" />
+                            </a>
+                        </div>
 
-                {/* Barra de búsqueda */}
-                <div className="search-container">
-                    <input 
-                        type="text" 
-                        placeholder="Busca tu comic preferido..."
-                        className="search-input"
-                    />
-                    <button className="search-button">
-                        <img src={searchIcon} alt="..." />
-                    </button>
-                </div>
+                        {/* Barra de búsqueda */}
+                        <div className="search-container">
+                            <input 
+                                type="text" 
+                                placeholder="Busca tu comic preferido..."
+                                className="search-input"
+                            />
+                            <button className="search-button">
+                                <img src={searchIcon} alt="..." />
+                            </button>
+                        </div>
 
-                {/* Botones de Iniciar sesión y Registro */}
-                <div className="navbar-buttons">
-                    {isAuthenticated ? (
-                    <UserButtons handleLogout={handleLogout} />
-                    ) : (
+                        {/* Botones de Iniciar sesión y Registro */}
+                        <div className="navbar-buttons">
+                            <button className="btn" onClick={handleShowSignUp}>
+                                Registrarse
+                                <span>
+                                    <img src={registerIcon} className='button-img' alt="..." />
+                                </span>
+                            </button>
+
+                            <button className="btn" onClick={handleShowLogin}>
+                                Iniciar sesión
+                                <span>
+                                    <img src={loginIcon} className='button-img' alt="..." />
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </nav>
+            ) : (
+                <nav className="navbar-container navbar-auth">
+                    {/* Encabezado del navbar */}
                     <>
-                        <button className="btn" onClick={handleShowSignUp}>
-                            Registrarse
-                            <span>
-                                <img src={registerIcon} className='button-img' alt="..." />
-                            </span>
-                        </button>
-
-                        <button className="btn" onClick={handleShowLogin}>
-                            Iniciar sesión
-                            <span>
-                                <img src={loginIcon} className='button-img' alt="..." />
-                            </span>
-                        </button>
+                        <span className='comics-span'>
+                        <img src={comicsIcon} className='comics-icon' alt="..." />
+                        Comics Recién Agregados
+                        </span>
                     </>
-                    )}
-                </div>
-            </nav>
+
+                    {/* Barra de búsqueda */}
+                    <div className="search-container">
+                        <input 
+                            type="text" 
+                            placeholder="Busca tu comic preferido..."
+                            className="search-input"
+                        />
+                        <button className="search-button">
+                            <img src={searchIcon} alt="..." />
+                        </button>
+                    </div>
+
+                    <UserButtons handleLogout={handleLogout} />
+                </nav>
+            )}
 
             {/* Modales de Iniciar sesión y Registro */}
             <SignUpModal show={showSignUp} handleClose={handleCloseSignin} setShowLogin={setShowLogin} />

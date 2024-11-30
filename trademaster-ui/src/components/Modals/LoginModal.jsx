@@ -62,7 +62,7 @@ const LoginModal = ({ show, handleClose, setShowSignUp }) => {
       setPassword('');
       handleClose();
 
-      navigate('/user');
+      navigate('/comics');
     } catch (error) {
       swalMessages.errorMessage('Credenciales incorrectas<br>Inténtalo nuevamente');
       console.error('Error en handleSubmit: ', error);
