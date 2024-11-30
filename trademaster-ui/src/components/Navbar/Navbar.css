@@ -10,20 +10,30 @@
     top: 0;
     z-index: 1000;
 }
+
+.navbar-no-auth {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
   
 .navbar-logo {
     align-items: center;
     display: flex;
-    height: 40px;
+    height: 100%;
+    padding: 8px 0;
 }
 
 .navbar-logo a {
-    height: 100%;
+    align-items: center;
+    display: flex;
+    height: 36px;
 }
-  
+
 .logo {
     height: 100%;
-    width: 100%;
+    object-fit: contain;
+    width: auto;
 }
   
 .navbar-buttons {

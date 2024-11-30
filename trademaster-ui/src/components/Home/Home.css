@@ -46,6 +46,30 @@
     width: 90px;
 }
 
+.new-comics-container {
+    background-color: var(--lime);
+    display: flex;
+    left: 0;
+    padding: 0.5rem 2rem;
+    position: relative;
+    right: 0;
+}
+
+.comics-span {
+    align-items: center;
+    color: var(--dark-blue);
+    display: flex;
+    font-size: x-large;
+    font-weight: 800;
+    justify-content: center;
+}
+
+.comics-icon {
+    height: auto;
+    margin: 0px 8px 4px 0px;
+    width: 35px;
+}
+
 /* Animación para la flecha */
 @keyframes bounce {
     0%, 20%, 50%, 80%, 100% {

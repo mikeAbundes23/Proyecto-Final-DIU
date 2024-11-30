@@ -10,6 +10,7 @@ import swalMessages from '../../services/SwalMessages';
 
 // Importamos los íconos (imágenes png)
 import nameIcon from '../../images/user.png';
+import lastNameIcon from '../../images/user02.png';
 import emailIcon from '../../images/mail.png';
 import passwordIcon from '../../images/password.png';
 import phoneIcon from '../../images/phone.png'
@@ -20,6 +21,7 @@ const SignUpModal = ({ show, handleClose, setShowLogin }) => {
 
   // Estados para los datos ingresados
   const [name, setName] = useState('');
+  const [lastname, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -38,7 +40,7 @@ const SignUpModal = ({ show, handleClose, setShowLogin }) => {
 
     // Validamos que las contraseñas coincidan
     if (password !== confirmPassword) {
-      swalMessages.errorMessage('Las contraseñas no coinciden Inténtalo nuevamente');
+      swalMessages.errorMessage('Las contraseñas no coinciden<br>Inténtalo nuevamente');
       return;
     }
 
@@ -46,11 +48,12 @@ const SignUpModal = ({ show, handleClose, setShowLogin }) => {
       // Realizamos la solicitud POST al endpoint de creación de usuario
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/user/create-user/`, {
         name: name,
-        email: email,
+        last_name: lastname,
+        username: username,
         password: password,
         password_confirmation: confirmPassword,
+        email: email,
         phone: phone,
-        username: username,
       });
 
       // Comprobamos la respuesta
@@ -59,6 +62,7 @@ const SignUpModal = ({ show, handleClose, setShowLogin }) => {
 
         // Limpiamos el formulario y cerramos el modal después del registro exitoso
         setName('');
+        setLastName('');
         setEmail('');
         setPassword('');
         setConfirmPassword('');
@@ -72,7 +76,7 @@ const SignUpModal = ({ show, handleClose, setShowLogin }) => {
         setShowLogin(true);
       }
     } catch (error) {
-      swalMessages.errorMessage('No se pudo completar el registro Por favor, inténtalo nuevamente');
+      swalMessages.errorMessage("No se pudo completar el registro<br>Por favor, inténtalo nuevamente");
       console.error('Error en handleSubmit: ', error);
     }
   };
@@ -82,6 +86,7 @@ const SignUpModal = ({ show, handleClose, setShowLogin }) => {
     handleClose(); // Cierra el modal
     // Limpiamos las entradas al cerrar el modal
     setName('');
+    setLastName('');
     setEmail('');
     setPassword('');
     setConfirmPassword('');
@@ -103,18 +108,18 @@ const SignUpModal = ({ show, handleClose, setShowLogin }) => {
 
       <Modal.Body>
         <form className="login-form" onSubmit={handleSubmit}>
-          {/* Nombre completo del usuario */}
+          {/* Nombre(s) del usuario */}
           <div className="input-group mb-3">
             <span className="input-group-text" id="name-addon">
-              <img src={nameIcon} alt="name-icon" className="input-icon" />
+              <img src={nameIcon} alt="..." className="input-icon" />
             </span>
 
             <input
               type="text"
               id="name"
               className="form-control rounded-input"
-              placeholder="Nombre Completo"
-              aria-label="Nombre Completo"
+              placeholder="Nombre(s)"
+              aria-label="Nombre(s)"
               aria-describedby="name-addon"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -122,10 +127,29 @@ const SignUpModal = ({ show, handleClose, setShowLogin }) => {
             />
           </div>
 
+          {/* Apellido(s) del usuario */}
+          <div className="input-group mb-3">
+            <span className="input-group-text" id="lastname-addon">
+              <img src={lastNameIcon} alt="..." className="input-icon" />
+            </span>
+
+            <input
+              type="text"
+              id="lastname"
+              className="form-control rounded-input"
+              placeholder="Apellido(s)"
+              aria-label="Apellido(s)"
+              aria-describedby="lastname-addon"
+              value={lastname}
+              onChange={(e) => setLastName(e.target.value)}
+              required
+            />
+          </div>
+
           {/* Correo del usuario */}
           <div className="input-group mb-3">
             <span className="input-group-text" id="email-addon">
-              <img src={emailIcon} alt="email-icon" className="input-icon" />
+              <img src={emailIcon} alt="..." className="input-icon" />
             </span>
 
             <input
@@ -144,7 +168,7 @@ const SignUpModal = ({ show, handleClose, setShowLogin }) => {
           {/* Contraseña del usuario */}
           <div className="input-group mb-3">
             <span className="input-group-text" id="password-addon">
-              <img src={passwordIcon} alt="password-icon" className="input-icon" />
+              <img src={passwordIcon} alt="..." className="input-icon" />
             </span>
 
             <input
@@ -164,7 +188,7 @@ const SignUpModal = ({ show, handleClose, setShowLogin }) => {
           {/* Confirmar contraseña */}
           <div className="input-group mb-3">
             <span className="input-group-text" id="confirm-password-addon">
-              <img src={passwordIcon} alt="confirm-password-icon" className="input-icon" />
+              <img src={passwordIcon} alt="..." className="input-icon" />
             </span>
 
             <input
@@ -184,7 +208,7 @@ const SignUpModal = ({ show, handleClose, setShowLogin }) => {
           {/* Teléfono del usuario */}
           <div className="input-group mb-3">
             <span className="input-group-text" id="phone-addon">
-              <img src={phoneIcon} alt="phone-icon" className="input-icon" />
+              <img src={phoneIcon} alt="..." className="input-icon" />
             </span>
 
             <input
@@ -195,7 +219,25 @@ const SignUpModal = ({ show, handleClose, setShowLogin }) => {
               aria-label="Teléfono"
               aria-describedby="phone-addon"
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              onChange={(e) => {
+                // Solo se permiten números
+                const value = e.target.value.replace(/\D/g, '');
+                // Limitamos a 10 dígitos
+                if (value.length <= 10) {
+                  setPhone(value);
+                }
+              }}
+              onKeyDown={(e) => {
+                // Así prevenimos la entrada de teclas que no sean números
+                const forbiddenKeys = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight'];
+                if (!forbiddenKeys.includes(e.key) && !/\d/.test(e.key)) {
+                  swalMessages.errorMessage("Sólo se permiten dígitos (0-9)");
+                  e.preventDefault();
+                }
+              }}
+              pattern="[0-9]{10}"
+              title="Debe ingresar un número de teléfono válido de 10 dígitos"
+              maxLength={10}
               required
             />
           </div>
@@ -203,7 +245,7 @@ const SignUpModal = ({ show, handleClose, setShowLogin }) => {
           {/* Nombre de usuario */}
           <div className="input-group mb-3">
             <span className="input-group-text" id="username-addon">
-              <img src={usernameIcon} alt="username-icon" className="input-icon" />
+              <img src={usernameIcon} alt="..." className="input-icon" />
             </span>
 
             <input

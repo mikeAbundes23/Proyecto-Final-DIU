@@ -5,7 +5,7 @@ class SwalMessages {
     this.confirmMessage = async () => {
       return await Swal.fire({
         title: '¿Estás seguro?',
-        text: "No podrás revertir esta acción",
+        html: "No podrás revertir esta acción",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Sí',
@@ -14,7 +14,9 @@ class SwalMessages {
           title: 'swal-title',
           icon: 'swal-icon',
           confirmButton: 'btn btn-danger me-3',
-          cancelButton: 'btn btn-primary'
+          cancelButton: 'btn btn-primary',
+          container: 'swal-container',
+          popup: 'swal-popup'
         },
         buttonsStyling: false
       });
@@ -27,10 +29,17 @@ class SwalMessages {
       position: 'top-end',
       icon: 'success',
       toast: true,
-      text: message,
+      html: message,
       background: '#E8F8F8',
       showConfirmButton: false,
-      timer: 4000
+      timer: 4000,
+      width: 'auto',
+      padding: '0.75em',
+      customClass: {
+        container: 'swal-container',
+        popup: 'swal-popup'
+      },
+      target: document.body
     });
   }
    
@@ -41,20 +50,34 @@ class SwalMessages {
         position: 'top-end',
         icon: 'error',
         toast: true,
-        text: "No se pudieron obtener los datos",
+        html: "No se pudieron obtener los datos",
         background: '#F8E8F8',
         showConfirmButton: false,
-        timer: 4000
+        timer: 4000,
+        width: 'auto',
+        padding: '0.75em',
+        customClass: {
+          container: 'swal-container',
+          popup: 'swal-popup'
+        },
+        target: document.body
       });
     } else {
       Swal.fire({
         position: 'top-end',
         icon: 'error',
         toast: true,
-        text: message,
+        html: message,
         background: '#F8E8F8',
         showConfirmButton: false,
-        timer: 4000
+        timer: 4000,
+        width: 'auto',
+        padding: '0.75em',
+        customClass: {
+          container: 'swal-container',
+          popup: 'swal-popup'
+        },
+        target: document.body
       });
     }
   }
