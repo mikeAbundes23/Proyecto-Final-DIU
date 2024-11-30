@@ -41,7 +41,6 @@ const Navbar = () => {
     const handleLogout = () => {
         localStorage.removeItem('access_token');
         localStorage.removeItem(process.env.REACT_APP_USER_NOTIFICATIONS_OBJECT_NAME);
-        localStorage.removeItem('reminderShown');
         navigate('/');
         logout();
     };
@@ -94,8 +93,8 @@ const Navbar = () => {
                     {/* Encabezado del navbar */}
                     <>
                         <span className='comics-span'>
-                        <img src={comicsIcon} className='comics-icon' alt="..." />
-                        Comics Recién Agregados
+                            <img src={comicsIcon} className='comics-icon' alt="..." />
+                            Comics Recién Agregados
                         </span>
                     </>
 

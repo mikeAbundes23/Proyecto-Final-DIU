@@ -3,6 +3,7 @@ import { AuthProvider } from './context/AuthContext';
 import ComicsPage from './components/Comics/ComicsPage';
 import Home from './components/Home/Home';
 import ProtectedRoute from './components/ProtectedRoute';
+import WishList from './components/WishList/WishList';
 
 function App() {
   return (
@@ -16,6 +17,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <ComicsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/wishlist"
+            element={
+              <ProtectedRoute>
+                <WishList />
               </ProtectedRoute>
             }
           />

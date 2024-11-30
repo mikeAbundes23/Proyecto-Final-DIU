@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // Importamos el archivo CSS
 import './UserButtons.css';
@@ -11,6 +12,8 @@ import plusIcon from '../../images/add.png'
 import PublishComicModal from '../Modals/PublishComicModal';
 
 const UserButtons = ({ handleLogout }) => {
+
+  const navigate = useNavigate();
   
   // Estado para controlar si el dropdown del usuario está abierto o cerrado
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
@@ -27,6 +30,12 @@ const UserButtons = ({ handleLogout }) => {
   // Funciones para manejar el abrir y cerrar del modal de 'Publicar comic'
   const handleShowPublish = () => setShowPublish(true);
   const handleClosePublish = () => setShowPublish(false);
+
+  // Función para manejar la navegación a la lista de deseos
+  const handleWishListClick = () => {
+    navigate('/wishlist');
+    setIsUserDropdownOpen(false);
+  };
 
   return (
 
@@ -45,7 +54,7 @@ const UserButtons = ({ handleLogout }) => {
 
         {isUserDropdownOpen && (
           <div className="dropdown-menu">
-            <button className="dropdown-item">Lista de deseos</button>
+            <button className="dropdown-item" onClick={handleWishListClick}>Lista de deseos</button>
               <div className="dropdown-divider"></div>
             <button className="dropdown-item">Bandeja de ofertas</button>
               <div className="dropdown-divider"></div>
