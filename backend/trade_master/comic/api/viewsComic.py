@@ -68,17 +68,12 @@ def get_comic(request, comic_id):
     Función para crear un cómic.
 """   
 @api_view(['POST'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def create_comic(request):
     try:
         comic_data = request.data
+        comic_data['seller'] = request.user.id # Se asigna el usuario que crea el cómic como vendedor
         
-        #user = get_object_or_404(User, id=request.user.id)
-        
-        #comic_data['seller'] = user.id # Se asigna el usuario que crea el cómic como vendedor
-        comic_data['seller'] = 2 # Se asigna el usuario que crea el cómic como vendedor
-
-
         comic_serializer = ComicSerializer(data=comic_data)
         
         if not comic_serializer.is_valid():

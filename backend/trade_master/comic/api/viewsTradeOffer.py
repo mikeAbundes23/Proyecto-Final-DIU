@@ -79,7 +79,6 @@ def get_trade_offer(request, trade_offer_id):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
-#TODO: rechazar las otras ofertas cuando se acepta una
 """
     Función para editar el estatus de un oferta de intercambio.
     0: Pendiente , 1: Aceptada, 2: Rechazada
@@ -89,10 +88,24 @@ def get_trade_offer(request, trade_offer_id):
 def trade_offer_update(request, trade_offer_id):
     try:
         trade_offer_data = request.data
+        status_data = trade_offer_data.get('status')
+        
         trade_offer = TradeOffer.objects.get(id=trade_offer_id, seller=request.user)
         
         if not trade_offer:
             return Response({"message": "Trade offer not found"}, status=status.HTTP_404_NOT_FOUND)
+                      
+        if status_data == 1: # Ver si la oferta fue aceptada
+            comic = Comic.objects.get(id=trade_offer.comic_id)
+            comics_offers = TradeOffer.objects.filter(comic=comic)
+            for offer in comics_offers: # rechazar las otras ofertas
+                if offer.id != trade_offer_id:
+                    offer.status = 2
+                    offer.save()
+                    
+            comic.is_sold = True # marcar el comic como vendido
+            comic.save()
+        
         
         trade_offer_serializer = TradeOfferSerializer(trade_offer, data=trade_offer_data, partial=True)
         
