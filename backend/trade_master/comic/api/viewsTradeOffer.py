@@ -47,8 +47,8 @@ def get_trade_offers(request):
         trade_offers_as_seller  = TradeOffer.objects.filter(seller=request.user)
         trade_offers_as_trader = TradeOffer.objects.filter(trader=request.user)
         
-        if not trade_offers_as_seller and not trade_offers_as_trader:
-            return Response({"message": "No trade offers found"}, status=status.HTTP_200_OK)
+        #if not trade_offers_as_seller and not trade_offers_as_trader:
+        #   return Response({"message": "No trade offers found"}, status=status.HTTP_200_OK)
         
         
         trade_offers_as_seller_serializer = TradeOfferDetailSerializer(trade_offers_as_seller, many=True)
