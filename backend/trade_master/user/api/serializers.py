@@ -1,16 +1,25 @@
 from rest_framework import serializers
 from ..models import User
 
+"""
+    Serializador para el modelo User
+"""
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id','name', 'last_name', 'username', 'email']
         
+"""
+    Serializador corto para el modelo User
+"""
 class UserShortSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id','name', 'last_name']
         
+"""
+    Serializador con los campos requeridos para crear un usuario
+"""
 class CreateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
