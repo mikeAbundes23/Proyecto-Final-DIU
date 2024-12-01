@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchTerm } from "../../redux/searchSlice";
@@ -46,6 +46,28 @@ const Navbar = () => {
   const handleCloseSignin = () => setShowSignUp(false);
   const handleShowSignUp = () => setShowSignUp(true);
 
+  const [visible, setVisible] = useState(true); // Nuevo estado para controlar la visibilidad
+  const [prevScrollPos, setPrevScrollPos] = useState(0); // Para trackear la posición del scroll
+
+  // Función para aplicar el evento de scroll sobre el navbar
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollPos = window.scrollY;
+
+      // Determina si el scroll es hacia arriba o abajo
+      const isVisible =
+        prevScrollPos > currentScrollPos || currentScrollPos < 10;
+
+      setVisible(isVisible);
+      setPrevScrollPos(currentScrollPos);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    // Limpiamos el event listener
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [prevScrollPos]);
+
   // Función para cerrar la sesión
   const handleLogout = () => {
     localStorage.removeItem("access_token");
@@ -59,7 +81,7 @@ const Navbar = () => {
   return (
     <>
       {!isAuthenticated ? (
-        <nav className="navbar-container">
+        <nav className={`navbar-container ${visible ? "" : "navbar-hidden"}`}>
           <div className="navbar-no-auth">
             {/* Logo de la página */}
             <div className="navbar-logo">
@@ -101,7 +123,11 @@ const Navbar = () => {
           </div>
         </nav>
       ) : (
-        <nav className="navbar-container navbar-auth">
+        <nav
+          className={`navbar-container navbar-auth ${
+            visible ? "" : "navbar-hidden"
+          }`}
+        >
           {/* Encabezado del navbar */}
           <>
             <span className="comics-span">

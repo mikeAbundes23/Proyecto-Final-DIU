@@ -231,7 +231,6 @@ const SignUpModal = ({ show, handleClose, setShowLogin }) => {
                 // Así prevenimos la entrada de teclas que no sean números
                 const forbiddenKeys = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight'];
                 if (!forbiddenKeys.includes(e.key) && !/\d/.test(e.key)) {
-                  swalMessages.errorMessage("Sólo se permiten dígitos (0-9)");
                   e.preventDefault();
                 }
               }}

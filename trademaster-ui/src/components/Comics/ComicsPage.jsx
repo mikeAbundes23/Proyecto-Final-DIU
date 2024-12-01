@@ -21,13 +21,65 @@ const ComicsPage = () => {
 
   const searchTerm = useSelector((state) => state.search.searchTerm);
 
-  const fetchData = async () => {
+  // Función para obtener la wishlist
+  const fetchWishList = async (token) => {
     try {
-      setIsLoading(true);
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/comics/wishlist/`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      // Validamos que response.data.data exista y sea un array
+      if (
+        response.data &&
+        response.data.data &&
+        Array.isArray(response.data.data)
+      ) {
+        return new Set(
+          response.data.data.map((item) => item.comic?.id).filter(Boolean)
+        );
+      }
+      return new Set(); // Regresamos un Set vacío si no hay datos válidos
+    } catch (error) {
+      console.error("Error en fetchWishList:", error);
+      return new Set();
+    }
+  };
+
+  // Función para obtener datos
+  const fetchData = async () => {
+    setIsLoading(true);
+
+    try {
+      // Primero obtenemos los comics
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/comics/`
       );
-      setComics(response.data.data);
+      let comicsData = [];
+
+      if (response.data && Array.isArray(response.data.data)) {
+        comicsData = response.data.data;
+      }
+
+      // Verificamos si hay un token
+      const token = localStorage.getItem("access_token");
+
+      if (token) {
+        // Si hay token, obtenemos la wishlist
+        const wishListData = await fetchWishList(token);
+
+        // Agregamos el estado de favorito a cada cómic
+        const comicsWithFavoriteStatus = comicsData.map((comic) => ({
+          ...comic,
+          initialFavorite: wishListData.has(comic.id),
+        }));
+        setComics(comicsWithFavoriteStatus);
+      } else {
+        // Si no hay token, simplemente mostramos los comics sin estado de favorito
+        setComics(comicsData);
+      }
     } catch (error) {
       console.error("Error completo en fetchData: ", error);
     } finally {
@@ -79,7 +131,12 @@ const ComicsPage = () => {
     return (
       <div className="comics-grid">
         {filteredComics.map((comic) => (
-          <ComicCard key={comic.id} comic={comic} />
+          <ComicCard
+            key={comic.id}
+            comic={comic}
+            initialFavorite={comic.initialFavorite}
+            onWishListUpdate={fetchData}
+          />
         ))}
       </div>
     );

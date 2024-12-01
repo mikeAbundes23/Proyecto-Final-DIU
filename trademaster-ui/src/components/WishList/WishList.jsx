@@ -26,7 +26,6 @@ const WishList = () => {
     const { isAuthenticated, logout } = useContext(AuthContext);
     const [comics, setComics] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [wishListIds, setWishListIds] = useState(new Set());
 
     // Función para cerrar la sesión
     const handleLogout = () => {
@@ -36,38 +35,16 @@ const WishList = () => {
         logout();
     };
 
-    // Función para obtener la lista de deseos
-    const fetchWishList = async () => {
-        try {
-            const token = localStorage.getItem("access_token");
-            const response = await axios.get(
-                `${process.env.REACT_APP_API_URL}/api/comics/wishlist/`,
-                {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                }
-            );
-            // Creamos un Set con los IDs de los cómics en la wishlist
-            const wishListSet = new Set(
-                response.data.data.map(item => item.comic.id)
-            );
-            setWishListIds(wishListSet);
-        } catch (error) {
-            console.error("Error en fetchWishList:", error);
-        }
-    };
-
     // Función para obtener los comics de la wishlist
     const fetchData = async () => {
         try {
             setIsLoading(true);
 
-            // Primero obtenemos la lista de deseos
-            await fetchWishList();
+            const token = localStorage.getItem("access_token");
+
+            if (!token) return;
 
             // Realizamos la solicitud de la información de los comics
-            const token = localStorage.getItem("access_token");
             const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/comics/wishlist/`,
                 {
                     headers: {
@@ -76,13 +53,21 @@ const WishList = () => {
                 }
             );
 
-            // Procesamos los cómics para incluir su estado de favorito
-            const processedComics = response.data.data.map(item => ({
-                ...item.comic,
-                isFavorite: true // Como vienen de la wishlist, sabemos que son favoritos
-            }));
+            if (response.data && response.data.data) {
+                // Filtramos los items nulos o indefinidos antes de procesar
+                const validComics = response.data.data.filter(
+                    item => item && item.comic && item.comic.id
+                );
 
-            setComics(processedComics);
+                // Eliminamos duplicados usando un Map
+                const uniqueComics = Array.from(
+                    new Map(validComics.map(item => [item.comic.id, item])).values()
+                );
+
+                setComics(uniqueComics);
+            } else {
+                setComics([]);
+            }
         } catch (error) {
             console.error("Error completo en fetchData: ", error);
         } finally {
@@ -105,7 +90,7 @@ const WishList = () => {
             );
         }
 
-        if (comics.length === 0) {
+        if (!comics || comics.length === 0) {
             return (
                 <div className="no-comics-message">
                     No hay cómics en tu lista de deseos
@@ -116,13 +101,20 @@ const WishList = () => {
         return (
 
             <div className="comics-grid">
-                {comics.map(comic => (
-                    <ComicCard
-                        key={comic.id}
-                        comic={comic}
-                        initialFavorite={true}
-                        onWishListUpdate={fetchData}
-                    />
+                {comics.map(item => (
+                    item && item.comic && (
+                        <ComicCard
+                            key={item.comic.id}
+                            comic={item.comic}
+                            initialFavorite={true}
+                            onWishListUpdate={async () => {
+                                // Agregamos un pequeño delay para dar tiempo a que se complete la operación anterior
+                                await new Promise(resolve => setTimeout(resolve, 300));
+                                await fetchData();
+                            }}
+                            isWishListView={true}
+                        />
+                    )
                 ))}
             </div>
         );
