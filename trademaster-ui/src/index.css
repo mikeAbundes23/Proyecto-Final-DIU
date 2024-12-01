@@ -107,6 +107,10 @@ input:focus {
   outline: none;
 }
 
+input[type="file"] {
+  display: none !important;
+}
+
 .input-group {
   align-items: center;
   display: flex;

@@ -11,6 +11,7 @@ import swalMessages from '../../services/SwalMessages';
 // Importamos los íconos (imágenes png)
 import priceIcon from '../../images/money.png';
 import closeIcon from '../../images/close.png';
+import uploadIcon from '../../images/upload.png';
 
 const PublishComicModal = ({ show, handleClose }) => {
 
@@ -38,9 +39,10 @@ const PublishComicModal = ({ show, handleClose }) => {
 
     // Función para manejar las fotos
     const handleImageUpload = (e) => {
+        const file = e.target.files[0];
         setNewComic({
             ...newComic,
-            image: e.target.files[0]
+            image: file
         });
     };
 
@@ -253,6 +255,12 @@ const PublishComicModal = ({ show, handleClose }) => {
                         <Form.Label>Foto(s) <span className="span-red">*</span></Form.Label>
 
                         <div className="image-upload-div">
+                            <label 
+                                htmlFor="photo-upload"
+                            >
+                                <img src={uploadIcon} alt="..." className='label-icon' />
+                                Subir foto
+                            </label>
                             <input
                                 type="file"
                                 accept="image/*"
@@ -260,6 +268,9 @@ const PublishComicModal = ({ show, handleClose }) => {
                                 className="d-none"
                                 id="photo-upload"
                             />
+                            <span>
+                                {newComic.image ? newComic.image.name : 'Ninguna foto seleccionada'}
+                            </span>
                         </div>
                     </Form.Group>
                 </Form>

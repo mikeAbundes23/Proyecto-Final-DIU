@@ -24,9 +24,38 @@
     margin-top: auto;
 }
 
-.image-upload-div input {
+.image-upload-div {
+    align-items: center;
     border: 2px dashed rgb(0, 135, 94, 0.4) !important;
+    border-radius: var(--radius-button);
+    display: flex;
+    flex-direction: column;
+    margin-top: 0.5rem;
     min-height: 70px;
+    padding: 1rem 2rem;
+    position: relative;
+}
+
+.image-upload-div label {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+}
+
+.label-icon {
+    align-self: center;
+    display: flex;
+    height: 35px;
+    padding-bottom: 10px;
+    width: auto;
+}
+
+.image-upload-div span {
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .span-red {

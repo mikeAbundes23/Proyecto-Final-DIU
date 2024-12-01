@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "react-bootstrap";
 import axios from "axios";
 
@@ -14,15 +14,53 @@ import favoriteRedIcon from '../../images/red-heart.png';
 import detailsIcon from '../../images/details.png';
 import defaultImage from '../../images/default.jpeg';
 
-const ComicCard = ({ comic, initialFavorite = false, onWishListUpdate }) => {
-
-    // console.log('Comic data:', comic);
+const ComicCard = ({ 
+    comic, 
+    initialFavorite = false, 
+    onWishListUpdate, 
+    isWishListView = false
+}) => {
 
     // Estado para controlar si el comic se puso como favorito
     const [isFavorite, setIsFavorite] = useState(initialFavorite);
 
     // Estado para controlar si el botón está en proceso
     const [isLoading, setIsLoading] = useState(false);
+
+    // Función para verificar si el cómic está en la wishlist al cargar
+    useEffect(() => {
+        const checkWishListStatus = async () => {
+            const token = localStorage.getItem("access_token");
+
+            if (!token || isWishListView) return;
+
+            try {
+                const response = await axios.get(
+                    `${process.env.REACT_APP_API_URL}/api/comics/wishlist/`,
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    }
+                );
+
+                if (response.data && response.data.data && Array.isArray(response.data.data)) {
+                    // Verificamos si este cómic está en la wishlist
+                    const isInWishList = response.data.data.some(
+                        item => item.comic && item.comic.id === (comic?.id || comic?.comic?.id)
+                    );
+                    setIsFavorite(isInWishList);
+                }
+            } catch (error) {
+                console.error('Error en checkWishListStatus:', error);
+            }
+        };
+
+        // Solo ejecutamos si tenemos un comic válido
+        if (comic && !initialFavorite && !isWishListView) {
+            checkWishListStatus();
+        }
+    }, [comic, initialFavorite, isWishListView]);
 
     // Función para manejar el click en el ícono de favorito
     const handleFavoriteClick = async () => {
@@ -34,6 +72,12 @@ const ComicCard = ({ comic, initialFavorite = false, onWishListUpdate }) => {
         // Verificamos si existe el token antes de continuar
         if (!token) {
             swalMessages.errorMessage("Tienes que iniciar sesión para realizar esta acción");
+            return;
+        }
+
+        const comicId = comic?.id || comic?.comic?.id;
+        if (!comicId) {
+            console.error('No se pudo obtener el ID del comic');
             return;
         }
 
@@ -98,8 +142,9 @@ const ComicCard = ({ comic, initialFavorite = false, onWishListUpdate }) => {
         }
     }
 
-    // Si el comic viene de la wishlist, necesitamos acceder a sus propiedades de manera diferente
-    const comicData = comic.comic || comic;
+    // Asegurarse de que tengamos datos válidos antes de renderizar
+    const comicData = comic?.comic || comic;
+    if (!comicData) return null;
 
     return (
 
@@ -118,20 +163,22 @@ const ComicCard = ({ comic, initialFavorite = false, onWishListUpdate }) => {
             </div>
 
             {/* Icono de favorito */}
-            <span 
-                className={`span-favorite ${isLoading ? 'disabled': ''}`}
-                onClick={handleFavoriteClick}
-                style={{ 
-                    cursor: isLoading ? 'not-allowed' : 'pointer',
-                    opacity: isLoading ? 0.5 : 1
-                }}
-            >
-                <img 
-                    src={isFavorite ? favoriteRedIcon : favoriteIcon} 
-                    alt="..." 
-                    className="favorite-icon"
-                />
-            </span>
+            {!isWishListView && (
+                <span 
+                    className={`span-favorite ${isLoading ? 'disabled': ''}`}
+                    onClick={handleFavoriteClick}
+                    style={{ 
+                        cursor: isLoading ? 'not-allowed' : 'pointer',
+                        opacity: isLoading ? 0.5 : 1
+                    }}
+                >
+                    <img 
+                        src={isFavorite ? favoriteRedIcon : favoriteIcon} 
+                        alt="..." 
+                        className="favorite-icon"
+                    />
+                </span>
+            )}
 
             {/* Datos del comic */}
             <div className="comic-data">
