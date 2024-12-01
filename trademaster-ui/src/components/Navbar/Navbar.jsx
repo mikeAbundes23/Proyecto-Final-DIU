@@ -1,5 +1,7 @@
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setSearchTerm } from "../../redux/searchSlice";
 
 // Importamos el archivo CSS
 import "./Navbar.css";
@@ -22,6 +24,14 @@ import SignUpModal from "../Modals/SignUpModal";
 import UserButtons from "./UserButtons";
 
 const Navbar = () => {
+  // Search bar handlers
+  const dispatch = useDispatch();
+  const searchTerm = useSelector((state) => state.search.searchTerm);
+
+  const handleSearchChange = (e) => {
+    dispatch(setSearchTerm(e.target.value));
+  };
+
   const navigate = useNavigate();
   const { isAuthenticated, logout } = useContext(AuthContext);
 
@@ -64,9 +74,11 @@ const Navbar = () => {
                 type="text"
                 placeholder="Busca tu comic preferido..."
                 className="search-input"
+                value={searchTerm}
+                onChange={handleSearchChange}
               />
               <button className="search-button">
-                <img src={searchIcon} alt="..." />
+                <img src={searchIcon} alt="Buscar" />
               </button>
             </div>
 
@@ -104,9 +116,11 @@ const Navbar = () => {
               type="text"
               placeholder="Busca tu comic preferido..."
               className="search-input"
+              value={searchTerm}
+              onChange={handleSearchChange}
             />
             <button className="search-button">
-              <img src={searchIcon} alt="..." />
+              <img src={searchIcon} alt="Buscar" />
             </button>
           </div>
 
