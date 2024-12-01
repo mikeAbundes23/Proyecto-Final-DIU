@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { Form } from "react-bootstrap";
 import axios from "axios";
@@ -48,8 +48,7 @@ const ComicsPage = () => {
     }
   };
 
-  // Función para obtener datos
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setIsLoading(true);
 
     try {
@@ -85,11 +84,11 @@ const ComicsPage = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []); // Dependencias vacías para que no se redefina
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(); // Llamada inicial
+  }, [fetchData]);
 
   const getFilteredComics = () => {
     let filteredComics = comics;
