@@ -14,6 +14,7 @@ import favoriteRedIcon from '../../images/red-heart.png';
 import detailsIcon from '../../images/details.png';
 import deleteIcon from '../../images/delete.png';
 import defaultImage from '../../images/default.jpeg';
+import { useNavigate } from 'react-router-dom';
 
 const ComicCard = ({ 
     comic, 
@@ -21,7 +22,7 @@ const ComicCard = ({
     onWishListUpdate, 
     isWishListView = false
 }) => {
-
+    const navigate = useNavigate();
     // Función para manejar el click en el ícono de favorito
     const handleFavoriteClick = async () => {
         const token = localStorage.getItem("access_token");
@@ -90,6 +91,14 @@ const ComicCard = ({
         if (!token) {
             swalMessages.errorMessage("Tienes que iniciar sesión para realizar esta acción");
             return;
+        }
+    
+        const comicId = comic?.id || comic?.comic?.id;
+
+        if (comicId) {
+            navigate(`/details/${comicId}`);
+        } else {
+            swalMessages.errorMessage("No se pudo cargar el detalle del cómic");
         }
     }
 

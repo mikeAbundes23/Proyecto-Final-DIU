@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchTerm } from "../../redux/searchSlice";
 
@@ -22,8 +22,7 @@ import SignUpModal from "../Modals/SignUpModal";
 import UserButtons from "./UserButtons";
 
 const Navbar = ({ onComicPublished }) => {
-
-  // Search bar handlers
+  const location = useLocation(); // Hook para obtener la ubicación actual
   const dispatch = useDispatch();
   const searchTerm = useSelector((state) => state.search.searchTerm);
 
@@ -34,40 +33,30 @@ const Navbar = ({ onComicPublished }) => {
   const navigate = useNavigate();
   const { isAuthenticated, logout } = useContext(AuthContext);
 
-  // Estados para los modales de Login y Signup
   const [showLogin, setShowLogin] = useState(false);
   const [showSignUp, setShowSignUp] = useState(false);
-
-  // Funciones para manejar el abrir y cerrar de los modales de Login y Signup
   const handleCloseLogin = () => setShowLogin(false);
   const handleShowLogin = () => setShowLogin(true);
 
   const handleCloseSignin = () => setShowSignUp(false);
   const handleShowSignUp = () => setShowSignUp(true);
 
-  const [visible, setVisible] = useState(true); // Nuevo estado para controlar la visibilidad
-  const [prevScrollPos, setPrevScrollPos] = useState(0); // Para trackear la posición del scroll
+  const [visible, setVisible] = useState(true);
+  const [prevScrollPos, setPrevScrollPos] = useState(0);
 
-  // Función para aplicar el evento de scroll sobre el navbar
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollPos = window.scrollY;
-
-      // Determina si el scroll es hacia arriba o abajo
       const isVisible =
         prevScrollPos > currentScrollPos || currentScrollPos < 10;
-
       setVisible(isVisible);
       setPrevScrollPos(currentScrollPos);
     };
 
     window.addEventListener("scroll", handleScroll);
-
-    // Limpiamos el event listener
     return () => window.removeEventListener("scroll", handleScroll);
   }, [prevScrollPos]);
 
-  // Función para cerrar la sesión
   const handleLogout = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem(
@@ -77,20 +66,19 @@ const Navbar = ({ onComicPublished }) => {
     logout();
   };
 
-  return (
+  // Verificamos si estamos en la página de detalles del cómic
+  const isComicDetailsPage = location.pathname.includes("/details/");
 
+  return (
     <>
       {!isAuthenticated ? (
         <nav className={`navbar-container ${visible ? "" : "navbar-hidden"}`}>
           <div className="navbar-no-auth">
-            {/* Logo de la página */}
             <div className="navbar-logo">
               <a href="/">
                 <img src={logo} alt="..." className="logo" />
               </a>
             </div>
-
-            {/* Barra de búsqueda */}
             <div className="search-container">
               <input
                 type="text"
@@ -103,8 +91,6 @@ const Navbar = ({ onComicPublished }) => {
                 <img src={searchIcon} alt="Buscar" />
               </button>
             </div>
-
-            {/* Botones de Iniciar sesión y Registro */}
             <div className="navbar-buttons">
               <button className="btn" onClick={handleShowSignUp}>
                 Registrarse
@@ -112,7 +98,6 @@ const Navbar = ({ onComicPublished }) => {
                   <img src={registerIcon} className="button-img" alt="..." />
                 </span>
               </button>
-
               <button className="btn" onClick={handleShowLogin}>
                 Iniciar sesión
                 <span>
@@ -128,15 +113,12 @@ const Navbar = ({ onComicPublished }) => {
             visible ? "" : "navbar-hidden"
           }`}
         >
-          {/* Encabezado del navbar */}
           <>
             <span className="comics-span">
               <img src={comicsIcon} className="comics-icon" alt="..." />
-              Comics Recién Agregados
+              {isComicDetailsPage ? "Detalles del Cómic" : "Comics Recién Agregados"}
             </span>
           </>
-
-          {/* Barra de búsqueda */}
           <div className="search-container">
             <input
               type="text"
@@ -149,12 +131,9 @@ const Navbar = ({ onComicPublished }) => {
               <img src={searchIcon} alt="Buscar" />
             </button>
           </div>
-
           <UserButtons handleLogout={handleLogout} onComicPublished={onComicPublished} />
         </nav>
       )}
-
-      {/* Modales de Iniciar sesión y Registro */}
       <SignUpModal
         show={showSignUp}
         handleClose={handleCloseSignin}
