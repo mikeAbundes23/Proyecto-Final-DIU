@@ -1,6 +1,6 @@
 from django.db import models
 from user.models import User
-
+from django.utils.timezone import now
 
 # Create your models here.
 class Comic(models.Model):
@@ -27,8 +27,9 @@ class TradeOffer(models.Model):
     comic = models.ForeignKey(Comic, on_delete=models.CASCADE, related_name='trade_offers')
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='trade_offers_seller')
     trader = models.ForeignKey(User, on_delete=models.CASCADE, related_name='trade_offers_trader')
-    status = models.IntegerField(default=0)  # 0: Pending, 1: Accepted, 2: Rejected
+    status = models.IntegerField(default=0)  # 0: Pendiente, 1: Aceptada, 2: Rechazada
     image = models.ImageField(upload_to='trade_images/', blank=True, null=True)
+    date = models.DateField(default=now) 
     
     def __str__(self):
         return f"Service: {self.service}, Title: {self.title}, Description: {self.description}, Status: {self.status}, Seller: {self.seller}, Trader: {self.trader}"
