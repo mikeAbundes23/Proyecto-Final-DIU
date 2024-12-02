@@ -115,10 +115,7 @@ const ComicsPage = () => {
 
   return (
     <div>
-      <Navbar
-        onComicPublished={fetchData}
-        alternativeTitle="Detalles del Cómic"
-      />
+      <Navbar onComicPublished={fetchData} />
       <div className="comics-page-container">
         <div className="category-select-container">
           <Form>

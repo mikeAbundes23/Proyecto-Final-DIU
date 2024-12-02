@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchTerm } from "../../redux/searchSlice";
 
@@ -22,7 +22,6 @@ import SignUpModal from "../Modals/SignUpModal";
 import UserButtons from "./UserButtons";
 
 const Navbar = ({ onComicPublished, alternativeTitle }) => {
-  const location = useLocation(); // Hook para obtener la ubicación actual
   // Search bar handlers
   const dispatch = useDispatch();
   const searchTerm = useSelector((state) => state.search.searchTerm);
