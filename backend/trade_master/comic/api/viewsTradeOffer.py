@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
 from comic.models import Comic, TradeOffer
 from user.models import User
@@ -25,6 +26,8 @@ def create_trade_offer(request, comic_id):
         trade_offer_data['comic'] = comic.id
         trade_offer_data['seller'] = seller.id
         trade_offer_data['trader'] = trader.id
+        # Pner fecha de hoy
+        trade_offer_data['date'] = timezone.now().date() 
         
         trade_offer_serializer = TradeOfferSerializer(data=trade_offer_data)
         
