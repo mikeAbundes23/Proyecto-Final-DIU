@@ -7,6 +7,7 @@ import defaultComicImage from "../../images/comic01.jpg";
 import backArrow from "../../images/back.png";
 import starIcon from "../../images/star.png";
 import heartIcon from "../../images/favorite.png";
+import OfferModal from "../Modals/OfferModal"; // Importamos el modal de oferta
 
 const ComicDetails = () => {
   const { comicId } = useParams();
@@ -14,6 +15,7 @@ const ComicDetails = () => {
   const [comic, setComic] = useState(null);
 
   const [isFavorite, setIsFavorite] = useState(false); // Estado para saber si es favorito
+  const [showOfferModal, setShowOfferModal] = useState(false); // Estado para mostrar el modal de oferta
 
   // Fetch detalles del cómic
   useEffect(() => {
@@ -59,6 +61,16 @@ const ComicDetails = () => {
       isFavorite ? "Cómic quitado de favoritos" : "Cómic añadido a favoritos"
     );
   };
+
+  const openOfferModal = () => {
+    setShowOfferModal(true);
+  };
+
+   // Función para cerrar el modal de oferta
+   const closeOfferModal = () => {
+    setShowOfferModal(false);
+   };
+
 
   return (
     <div>
@@ -127,8 +139,9 @@ const ComicDetails = () => {
                 </span>
               </div>
             </div>
-
-            <button className="offer-button">Ofertar</button>
+            <button className="offer-button" onClick={openOfferModal}>Ofertar</button>
+            {/* Mostrar el modal de oferta */}
+            <OfferModal show={showOfferModal} onClose={closeOfferModal} />
           </div>
         </div>
       </div>
