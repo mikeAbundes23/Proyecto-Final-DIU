@@ -6,6 +6,7 @@ import ComicsPage from "./components/Comics/ComicsPage";
 import Home from "./components/Home/Home";
 import ProtectedRoute from "./components/ProtectedRoute";
 import WishList from "./components/WishList/WishList";
+import ComicDetails from "./components/Comics/ComicDetails";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route path="/details/:comicId" element={<ComicDetails />} />
           </Routes>
         </Router>
       </AuthProvider>
