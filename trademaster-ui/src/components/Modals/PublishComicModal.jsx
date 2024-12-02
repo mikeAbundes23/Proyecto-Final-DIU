@@ -13,7 +13,7 @@ import priceIcon from '../../images/money.png';
 import closeIcon from '../../images/close.png';
 import uploadIcon from '../../images/upload.png';
 
-const PublishComicModal = ({ show, handleClose }) => {
+const PublishComicModal = ({ show, handleClose, onComicPublished }) => {
 
     // Estados para el nuevo cómic
     const newComicState = {
@@ -107,7 +107,9 @@ const PublishComicModal = ({ show, handleClose }) => {
             if ((response.status === 201 || response.status === 200) && response.data) {
                 // Mostramos un mensaje de éxito
                 swalMessages.successMessage("Tu comic ha sido publicado exitosamente");
-
+                if (onComicPublished) {
+                    onComicPublished();
+                }
                 // Cerramos el modal
                 handleModalClose();
             } else {

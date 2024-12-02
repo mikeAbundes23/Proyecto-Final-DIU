@@ -16,14 +16,13 @@ import loginIcon from "../../images/login.png";
 import searchIcon from "../../images/search.png";
 import comicsIcon from "../../images/book.png";
 
-// Importamos los modales de Login y Registro
+// Importamos los componentes necesarios
 import LoginModal from "../Modals/LoginModal";
 import SignUpModal from "../Modals/SignUpModal";
-
-// Importamos los botones del navbar una vez logueado
 import UserButtons from "./UserButtons";
 
-const Navbar = () => {
+const Navbar = ({ onComicPublished }) => {
+
   // Search bar handlers
   const dispatch = useDispatch();
   const searchTerm = useSelector((state) => state.search.searchTerm);
@@ -79,6 +78,7 @@ const Navbar = () => {
   };
 
   return (
+
     <>
       {!isAuthenticated ? (
         <nav className={`navbar-container ${visible ? "" : "navbar-hidden"}`}>
@@ -150,7 +150,7 @@ const Navbar = () => {
             </button>
           </div>
 
-          <UserButtons handleLogout={handleLogout} />
+          <UserButtons handleLogout={handleLogout} onComicPublished={onComicPublished} />
         </nav>
       )}
 

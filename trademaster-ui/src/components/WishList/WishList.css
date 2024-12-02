@@ -1,8 +1,8 @@
 .btn-back-container {
     display: flex;
-    position: relative;
     margin-left: 2rem;
     margin-top: 6rem;
+    position: relative;
 }
 
 .btn-back {

@@ -21,6 +21,7 @@ import UserButtons from "../Navbar/UserButtons";
 import ComicCard from "../Comics/ComicCard";
 
 const WishList = () => {
+
   const navigate = useNavigate();
   const { logout } = useContext(AuthContext);
   const [comics, setComics] = useState([]);
@@ -38,12 +39,15 @@ const WishList = () => {
 
   // Función para obtener los comics de la wishlist
   const fetchData = async () => {
-    try {
-      setIsLoading(true);
+    setIsLoading(true);
 
+    try {
       const token = localStorage.getItem("access_token");
 
-      if (!token) return;
+      if (!token) {
+        setComics([]);
+        return;
+      }
 
       // Realizamos la solicitud de la información de los comics
       const response = await axios.get(
@@ -55,23 +59,19 @@ const WishList = () => {
         }
       );
 
-      if (response.data && response.data.data) {
-        // Filtramos los items nulos o indefinidos antes de procesar
-        const validComics = response.data.data.filter(
-          (item) => item && item.comic && item.comic.id
-        );
+      // Filtramos y eliminamos duplicados en una sola operación
+      const uniqueComics = Array.from(
+        new Map(
+          (response.data.data || [])
+            .filter(item => item?.comic?.id)
+            .map(item => [item.comic.id, item])
+        ).values()
+      );
 
-        // Eliminamos duplicados usando un Map
-        const uniqueComics = Array.from(
-          new Map(validComics.map((item) => [item.comic.id, item])).values()
-        );
-
-        setComics(uniqueComics);
-      } else {
-        setComics([]);
-      }
+      setComics(uniqueComics);
     } catch (error) {
       console.error("Error completo en fetchData: ", error);
+      setComics([]);
     } finally {
       setIsLoading(false);
     }
@@ -97,29 +97,22 @@ const WishList = () => {
     }
 
     return (
+
       <div className="comics-grid">
-        {comics.map(
-          (item) =>
-            item &&
-            item.comic && (
-              <ComicCard
-                key={item.comic.id}
-                comic={item.comic}
-                initialFavorite={true}
-                onWishListUpdate={async () => {
-                  // Agregamos un pequeño delay para dar tiempo a que se complete la operación anterior
-                  await new Promise((resolve) => setTimeout(resolve, 300));
-                  await fetchData();
-                }}
-                isWishListView={true}
-              />
-            )
-        )}
+        {comics.map(item => (
+          <ComicCard
+            key={item.comic.id}
+            comic={item.comic}
+            onWishListUpdate={fetchData}
+            isWishListView={true}
+          />
+        ))}
       </div>
     );
   };
 
   return (
+
     <>
       <nav className="navbar-container navbar-auth">
         {/* Encabezado del navbar */}

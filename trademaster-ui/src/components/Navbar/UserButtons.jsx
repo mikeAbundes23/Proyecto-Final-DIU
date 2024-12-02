@@ -11,7 +11,7 @@ import plusIcon from '../../images/add.png'
 // Importamos el modal de Publicar comic
 import PublishComicModal from '../Modals/PublishComicModal';
 
-const UserButtons = ({ handleLogout }) => {
+const UserButtons = ({ handleLogout, onComicPublished }) => {
 
   const navigate = useNavigate();
   
@@ -66,7 +66,10 @@ const UserButtons = ({ handleLogout }) => {
       </div>
 
       {/* Modal de Publicar comic */}
-      <PublishComicModal show={showPublish} handleClose={handleClosePublish} />
+      <PublishComicModal 
+        show={showPublish} 
+        handleClose={handleClosePublish} 
+        onComicPublished={onComicPublished} />
     </div>
   );
 };

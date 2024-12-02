@@ -58,8 +58,8 @@
 
 .comic-data {
     display: flex;
-    flex-direction: column;
     flex: 1;
+    flex-direction: column;
     padding: 1rem 0;
 }
 
@@ -83,6 +83,14 @@
 }
 
 .btn-details-div {
+    display: flex;
+    justify-content: center;
+    margin-top: auto;
+    padding: 0 1rem 1rem 1rem;
+    width: 100%;
+}
+
+.btn-delete-div {
     display: flex;
     justify-content: center;
     margin-top: auto;

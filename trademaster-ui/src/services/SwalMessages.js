@@ -13,8 +13,8 @@ class SwalMessages {
         customClass: {
           title: 'swal-title',
           icon: 'swal-icon',
-          confirmButton: 'btn btn-danger me-3',
-          cancelButton: 'btn btn-primary',
+          confirmButton: 'btn btn-yes',
+          cancelButton: 'btn btn-no',
           container: 'swal-container',
           popup: 'swal-popup'
         },

@@ -1,8 +1,12 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Form } from "react-bootstrap";
 import axios from "axios";
+
+// Importamos el archivo CSS
 import "./ComicsPage.css";
+
+// Importamos los componentes necesarios
 import Navbar from "../Navbar/Navbar";
 import ComicCard from "./ComicCard";
 
@@ -15,81 +19,58 @@ const categories = [
 ];
 
 const ComicsPage = () => {
+
+  // Estados necesarios para cargar los comics
   const [comics, setComics] = useState([]);
+  const [wishList, setWishList] = useState(new Set());
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [isLoading, setIsLoading] = useState(true);
 
   const searchTerm = useSelector((state) => state.search.searchTerm);
 
-  // Función para obtener la wishlist
-  const fetchWishList = async (token) => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/comics/wishlist/`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      // Validamos que response.data.data exista y sea un array
-      if (
-        response.data &&
-        response.data.data &&
-        Array.isArray(response.data.data)
-      ) {
-        return new Set(
-          response.data.data.map((item) => item.comic?.id).filter(Boolean)
-        );
-      }
-      return new Set(); // Regresamos un Set vacío si no hay datos válidos
-    } catch (error) {
-      console.error("Error en fetchWishList:", error);
-      return new Set();
-    }
-  };
-
-  const fetchData = useCallback(async () => {
+  const fetchData = async () => {
     setIsLoading(true);
 
     try {
       // Primero obtenemos los comics
-      const response = await axios.get(
+      const comicsResponse = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/comics/`
       );
-      let comicsData = [];
-
-      if (response.data && Array.isArray(response.data.data)) {
-        comicsData = response.data.data;
-      }
 
       // Verificamos si hay un token
       const token = localStorage.getItem("access_token");
 
       if (token) {
         // Si hay token, obtenemos la wishlist
-        const wishListData = await fetchWishList(token);
+        const wishListResponse = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/comics/wishlist/`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
-        // Agregamos el estado de favorito a cada cómic
-        const comicsWithFavoriteStatus = comicsData.map((comic) => ({
-          ...comic,
-          initialFavorite: wishListData.has(comic.id),
-        }));
-        setComics(comicsWithFavoriteStatus);
-      } else {
-        // Si no hay token, simplemente mostramos los comics sin estado de favorito
-        setComics(comicsData);
+        const wishListIds = new Set(
+          wishListResponse.data.data
+            ?.map(item => item.comic?.id)
+            .filter(Boolean)
+        );
+        setWishList(wishListIds);
       }
+
+      setComics(comicsResponse.data.data || []);
     } catch (error) {
       console.error("Error completo en fetchData: ", error);
+      setComics([]);
     } finally {
       setIsLoading(false);
     }
-  }, []); // Dependencias vacías para que no se redefina
+  }; 
 
   useEffect(() => {
     fetchData(); // Llamada inicial
-  }, [fetchData]);
+  }, []);
 
+  // Función para obtener los comics filtrados por categoría o por la barra de búsqueda
   const getFilteredComics = () => {
     let filteredComics = comics;
 
@@ -108,10 +89,6 @@ const ComicsPage = () => {
     return filteredComics;
   };
 
-  const handleCategoryChange = (e) => {
-    setSelectedCategory(e.target.value);
-  };
-
   const renderComics = () => {
     if (isLoading) {
       return <div className="no-comics-message">Cargando...</div>;
@@ -122,18 +99,19 @@ const ComicsPage = () => {
     if (filteredComics.length === 0) {
       return (
         <div className="no-comics-message">
-          No hay cómics disponibles en esta categoría
+          No hay cómics disponibles
         </div>
       );
     }
 
     return (
+
       <div className="comics-grid">
         {filteredComics.map((comic) => (
           <ComicCard
             key={comic.id}
             comic={comic}
-            initialFavorite={comic.initialFavorite}
+            isFavorite={wishList.has(comic.id)}
             onWishListUpdate={fetchData}
           />
         ))}
@@ -142,14 +120,15 @@ const ComicsPage = () => {
   };
 
   return (
+
     <div>
-      <Navbar />
+      <Navbar onComicPublished={fetchData} />
       <div className="comics-page-container">
         <div className="category-select-container">
           <Form>
             <Form.Select
               value={selectedCategory}
-              onChange={handleCategoryChange}
+              onChange={(e) => setSelectedCategory(e.target.value)}
               className="category-select"
             >
               {categories.map((category) => (
