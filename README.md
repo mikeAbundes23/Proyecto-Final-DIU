@@ -63,7 +63,8 @@ Entrar a la carpeta **_Proyecto-Final-DIU_**: `cd Proyecto-Final-DIU`.
 Crear un entorno virtual: `python3 -m venv venv`.
 
 Activar el entorno virtual: `source ./venv/bin/activate`.
-(Windows: `./venv/Scripts/activate`)
+
+(en Windows: `./venv/Scripts/activate`)
 
 Navegar al directorio **_backend_**: `cd backend`.
 
