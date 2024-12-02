@@ -113,7 +113,7 @@ const ComicCard = ({
             <div className="comic-image-container">
                 {comicData.image ? (
                     <img 
-                        src={`${process.env.REACT_APP_API_URL}/api/comics/${comicData.id}`}
+                        src={`http://localhost:8000/${comicData.image}`} 
                         alt="..." 
                         className="comic-cover"
                     />

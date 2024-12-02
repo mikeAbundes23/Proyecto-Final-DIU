@@ -53,7 +53,7 @@ def my_comics(request):
     Función para obtener un cómic por su id.
 """   
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def get_comic(request, comic_id):
     try:
         comic = get_object_or_404(Comic, id=comic_id)

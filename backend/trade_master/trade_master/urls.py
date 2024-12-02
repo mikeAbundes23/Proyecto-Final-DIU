@@ -16,9 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings  # Asegúrate de importar settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('user.api.urls')),
     path('api/', include('comic.api.urls')),
-]
+] + static(settings.COMIC_IMAGES_URL, document_root=settings.COMIC_IMAGES_ROOT)

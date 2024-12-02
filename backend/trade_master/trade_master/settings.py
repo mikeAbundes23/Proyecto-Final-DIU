@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 from os import path, getenv
+import os
 from django.core.management.utils import get_random_secret_key
 from dotenv import load_dotenv
 import boto3
@@ -171,6 +172,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+
+COMIC_IMAGES_URL = '/comic_images/'
+COMIC_IMAGES_ROOT = os.path.join(BASE_DIR, 'comic_images')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
