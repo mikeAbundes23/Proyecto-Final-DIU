@@ -5,10 +5,13 @@ from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.shortcuts import get_object_or_404
 
-from comic.models import Comic, WishList, TradeOffer
+from comic.models import Comic, TradeOffer
 from user.models import User
 from comic.api.serializers import TradeOfferSerializer, TradeOfferDetailSerializer
 
+"""
+    Función para crear una oferta de intercambio de un cómic.
+"""
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_trade_offer(request, comic_id):
@@ -37,20 +40,20 @@ def create_trade_offer(request, comic_id):
   
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-    
+ 
+"""
+    Función para obtener las ofertas de intercambio de un usuario.
+    Las ofertas que ha realizado como vendedor y las que ha recibido como comprador.
+"""   
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_trade_offers(request):
     try:
         
-        # Trade offers where the user is the trader or the seller
+        # obtenemos por separado las ofertas de intercambio como vendedor y como comprador
         trade_offers_as_seller  = TradeOffer.objects.filter(seller=request.user)
         trade_offers_as_trader = TradeOffer.objects.filter(trader=request.user)
-        
-        if not trade_offers_as_seller and not trade_offers_as_trader:
-            return Response({"message": "No trade offers found"}, status=status.HTTP_200_OK)
-        
-        
+               
         trade_offers_as_seller_serializer = TradeOfferDetailSerializer(trade_offers_as_seller, many=True)
         trade_offers_as_trader_serializer = TradeOfferDetailSerializer(trade_offers_as_trader, many=True)
         return Response({"data" : {
@@ -61,6 +64,9 @@ def get_trade_offers(request):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
+"""
+    Función para obtener una oferta de intercambio a tráves de su ID.
+"""
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_trade_offer(request, trade_offer_id):
@@ -73,16 +79,33 @@ def get_trade_offer(request, trade_offer_id):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
-#TODO: rechazar las otras ofertas cuando se acepta una
+"""
+    Función para editar el estatus de un oferta de intercambio.
+    0: Pendiente , 1: Aceptada, 2: Rechazada
+"""
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def trade_offer_update(request, trade_offer_id):
     try:
         trade_offer_data = request.data
+        status_data = trade_offer_data.get('status')
+        
         trade_offer = TradeOffer.objects.get(id=trade_offer_id, seller=request.user)
         
         if not trade_offer:
             return Response({"message": "Trade offer not found"}, status=status.HTTP_404_NOT_FOUND)
+                      
+        if status_data == 1: # Ver si la oferta fue aceptada
+            comic = Comic.objects.get(id=trade_offer.comic_id)
+            comics_offers = TradeOffer.objects.filter(comic=comic)
+            for offer in comics_offers: # rechazar las otras ofertas
+                if offer.id != trade_offer_id:
+                    offer.status = 2
+                    offer.save()
+                    
+            comic.is_sold = True # marcar el comic como vendido
+            comic.save()
+        
         
         trade_offer_serializer = TradeOfferSerializer(trade_offer, data=trade_offer_data, partial=True)
         
