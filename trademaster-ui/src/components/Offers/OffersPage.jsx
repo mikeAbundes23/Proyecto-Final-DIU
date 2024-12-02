@@ -11,10 +11,12 @@ const OffersPage = () => {
   const [receivedOffers, setReceivedOffers] = useState([]);
   const [sentOffers, setSentOffers] = useState([]);
   const navigate = useNavigate(); // Navigation hook
+  const [isLoading, setIsLoading] = useState(true);
 
   // Fetch offers from the API
   const fetchOffers = async () => {
     try {
+      setIsLoading(true);
       const token = localStorage.getItem("access_token");
 
       if (!token) {
@@ -35,6 +37,8 @@ const OffersPage = () => {
       setSentOffers(trade_offers_as_trader || []);
     } catch (error) {
       console.error("Error fetching offers:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -164,8 +168,11 @@ const OffersPage = () => {
         </button>
       </div>
 
+      {/* is loading */}
+      {isLoading && <p className="loading-offers">Cargando...</p>}
+
       {/* List of offers */}
-      <div className="offers-list">{renderOffers()}</div>
+      {!isLoading && <div className="offers-list">{renderOffers()}</div>}
     </div>
   );
 };

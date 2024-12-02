@@ -27,6 +27,13 @@
   background-color: transparent !important;
 }
 
+.loading-offers {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40vh;
+}
+
 /* Pestañas (Recibidas/Enviadas) */
 .tabs {
   display: flex;
