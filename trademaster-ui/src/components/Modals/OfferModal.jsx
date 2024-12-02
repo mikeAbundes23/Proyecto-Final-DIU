@@ -40,15 +40,14 @@ const OfferModal = ({ show, onClose }) => {
             const response = await axios.post(
                 `${process.env.REACT_APP_API_URL}/api/comics/trade-offer/create/${comicId}/`,
                 {
+                    'service': formData.offerType,
+                    'title': formData.title,
+                    'description': formData.description
+                },
+                {
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
                     },
-                    body: {
-                        'service': formData.offerType,
-                        'title': formData.title,
-                        'description': formData.description,
-                        'image': ''
-                    }
                 }
             );
             setOffer(response.data);
