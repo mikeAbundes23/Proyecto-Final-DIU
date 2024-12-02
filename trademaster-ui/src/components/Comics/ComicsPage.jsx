@@ -19,7 +19,6 @@ const categories = [
 ];
 
 const ComicsPage = () => {
-
   // Estados necesarios para cargar los comics
   const [comics, setComics] = useState([]);
   const [wishList, setWishList] = useState(new Set());
@@ -51,7 +50,7 @@ const ComicsPage = () => {
 
         const wishListIds = new Set(
           wishListResponse.data.data
-            ?.map(item => item.comic?.id)
+            ?.map((item) => item.comic?.id)
             .filter(Boolean)
         );
         setWishList(wishListIds);
@@ -64,7 +63,7 @@ const ComicsPage = () => {
     } finally {
       setIsLoading(false);
     }
-  }; 
+  };
 
   useEffect(() => {
     fetchData(); // Llamada inicial
@@ -97,15 +96,10 @@ const ComicsPage = () => {
     const filteredComics = getFilteredComics();
 
     if (filteredComics.length === 0) {
-      return (
-        <div className="no-comics-message">
-          No hay cómics disponibles
-        </div>
-      );
+      return <div className="no-comics-message">No hay cómics disponibles</div>;
     }
 
     return (
-
       <div className="comics-grid">
         {filteredComics.map((comic) => (
           <ComicCard
@@ -120,7 +114,6 @@ const ComicsPage = () => {
   };
 
   return (
-
     <div>
       <Navbar onComicPublished={fetchData} />
       <div className="comics-page-container">

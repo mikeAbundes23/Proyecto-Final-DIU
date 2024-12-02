@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchTerm } from "../../redux/searchSlice";
 
@@ -21,8 +21,8 @@ import LoginModal from "../Modals/LoginModal";
 import SignUpModal from "../Modals/SignUpModal";
 import UserButtons from "./UserButtons";
 
-const Navbar = ({ onComicPublished }) => {
-  const location = useLocation(); // Hook para obtener la ubicación actual
+const Navbar = ({ onComicPublished, alternativeTitle }) => {
+  // Search bar handlers
   const dispatch = useDispatch();
   const searchTerm = useSelector((state) => state.search.searchTerm);
 
@@ -65,9 +65,6 @@ const Navbar = ({ onComicPublished }) => {
     navigate("/");
     logout();
   };
-
-  // Verificamos si estamos en la página de detalles del cómic
-  const isComicDetailsPage = location.pathname.includes("/details/");
 
   return (
     <>
@@ -116,7 +113,7 @@ const Navbar = ({ onComicPublished }) => {
           <>
             <span className="comics-span">
               <img src={comicsIcon} className="comics-icon" alt="..." />
-              {isComicDetailsPage ? "Detalles del Cómic" : "Comics Recién Agregados"}
+              {alternativeTitle ? alternativeTitle : "Comics Recién Agregados"}
             </span>
           </>
           <div className="search-container">
@@ -131,7 +128,11 @@ const Navbar = ({ onComicPublished }) => {
               <img src={searchIcon} alt="Buscar" />
             </button>
           </div>
-          <UserButtons handleLogout={handleLogout} onComicPublished={onComicPublished} />
+
+          <UserButtons
+            handleLogout={handleLogout}
+            onComicPublished={onComicPublished}
+          />
         </nav>
       )}
       <SignUpModal

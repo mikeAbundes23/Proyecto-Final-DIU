@@ -9,6 +9,10 @@ from comic.models import Comic, WishList
 from user.models import User
 from comic.api.serializers import WishListSerializer, MyWishListSerializer
 
+
+"""
+    Función para añadir un cómic a la lista de deseos de un usuario.
+"""
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def add_to_wishlist(request, comic_id):
@@ -32,7 +36,10 @@ def add_to_wishlist(request, comic_id):
         
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-    
+
+"""
+    Función para obtener la lista de deseos de un usuario.
+"""    
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_wishlist(request):
@@ -49,7 +56,10 @@ def get_wishlist(request):
         
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-    
+ 
+"""
+    Función para eliminar un cómic de la lista de deseos de un usuario.
+"""   
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def delete_item(request, comic_id):

@@ -21,7 +21,6 @@ import UserButtons from "../Navbar/UserButtons";
 import ComicCard from "../Comics/ComicCard";
 
 const WishList = () => {
-
   const navigate = useNavigate();
   const { logout } = useContext(AuthContext);
   const [comics, setComics] = useState([]);
@@ -63,8 +62,8 @@ const WishList = () => {
       const uniqueComics = Array.from(
         new Map(
           (response.data.data || [])
-            .filter(item => item?.comic?.id)
-            .map(item => [item.comic.id, item])
+            .filter((item) => item?.comic?.id)
+            .map((item) => [item.comic.id, item])
         ).values()
       );
 
@@ -97,9 +96,8 @@ const WishList = () => {
     }
 
     return (
-
       <div className="comics-grid">
-        {comics.map(item => (
+        {comics.map((item) => (
           <ComicCard
             key={item.comic.id}
             comic={item.comic}
@@ -112,7 +110,6 @@ const WishList = () => {
   };
 
   return (
-
     <>
       <nav className="navbar-container navbar-auth">
         {/* Encabezado del navbar */}
@@ -140,7 +137,7 @@ const WishList = () => {
 
       {/* Botón de 'Volver' */}
       <div className="btn btn-back-container">
-        <Button className="btn-back" onClick={() => navigate(-1)}>
+        <Button className="btn-back" onClick={() => navigate("/comics")}>
           <span>
             <img src={backIcon} className="btn-back-img" alt="..." />
           </span>

@@ -9,11 +9,17 @@ from comic.models import Comic
 from user.models import User
 from comic.api.serializers import ComicSerializer
 
+
+"""
+    Función para obtener todos los cómics disponibles.
+"""
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_comics(request):
     try:
-        comics = Comic.objects.all()
+        
+        # Obtener los comics que no han sido vendidos
+        comics = Comic.objects.filter(is_sold=False)
         
         if not comics:
             return Response({"message": "No comics found"}, status=status.HTTP_200_OK)
@@ -23,7 +29,10 @@ def get_comics(request):
         
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-    
+
+"""
+    Función para obtener los cómics que ha creado un usuario.
+"""    
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def my_comics(request):
@@ -39,7 +48,10 @@ def my_comics(request):
         
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-    
+ 
+"""
+    Función para obtener un cómic por su id.
+"""   
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_comic(request, comic_id):
@@ -51,17 +63,17 @@ def get_comic(request, comic_id):
         
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-    
+ 
+"""
+    Función para crear un cómic.
+"""   
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_comic(request):
     try:
         comic_data = request.data
+        comic_data['seller'] = request.user.id # Se asigna el usuario que crea el cómic como vendedor
         
-        user = get_object_or_404(User, id=request.user.id)
-        
-        comic_data['seller'] = user.id
-
         comic_serializer = ComicSerializer(data=comic_data)
         
         if not comic_serializer.is_valid():
@@ -75,14 +87,17 @@ def create_comic(request):
         
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-    
+ 
+"""
+    Función para actualizar un cómic.
+"""   
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def update_comic(request, comic_id):
     try:
         comic = get_object_or_404(Comic, id=comic_id)
         
-        if comic.seller.id != request.user.id: # Check if the user is the seller of the comic
+        if comic.seller.id != request.user.id: # Solo el usuario que creó el cómic puede actualizarlo
             return Response({"error": "You are not authorized to update this comic"}, status=status.HTTP_401_UNAUTHORIZED)
         
         comic_data = request.data
@@ -99,14 +114,17 @@ def update_comic(request, comic_id):
         
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-    
+
+"""
+    Función para eliminar un cómic creado por el usuario.
+"""
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def delete_comic(request, comic_id):
     try:
         comic = get_object_or_404(Comic, id=comic_id)
         
-        if comic.seller.id != request.user.id:
+        if comic.seller.id != request.user.id: # Solo el usuario que creó el cómic puede eliminarlo
             return Response({"error": "You are not authorized to delete this comic"}, status=status.HTTP_401_UNAUTHORIZED)
         
         comic.delete()
