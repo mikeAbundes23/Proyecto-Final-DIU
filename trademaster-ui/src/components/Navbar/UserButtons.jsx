@@ -1,20 +1,19 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 // Importamos el archivo CSS
-import './UserButtons.css';
+import "./UserButtons.css";
 
 // Importamos los íconos (imágenes png)
-import userIcon from '../../images/session.png';
-import plusIcon from '../../images/add.png'
+import userIcon from "../../images/session.png";
+import plusIcon from "../../images/add.png";
 
 // Importamos el modal de Publicar comic
-import PublishComicModal from '../Modals/PublishComicModal';
+import PublishComicModal from "../Modals/PublishComicModal";
 
 const UserButtons = ({ handleLogout, onComicPublished }) => {
-
   const navigate = useNavigate();
-  
+
   // Estado para controlar si el dropdown del usuario está abierto o cerrado
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
 
@@ -33,13 +32,18 @@ const UserButtons = ({ handleLogout, onComicPublished }) => {
 
   // Función para manejar la navegación a la lista de deseos
   const handleWishListClick = () => {
-    navigate('/wishlist');
+    navigate("/wishlist");
+    setIsUserDropdownOpen(false);
+  };
+
+  // Función para manejar la navegación a la bandeja de ofertas
+  const handleOffersClick = () => {
+    navigate("/offers");
     setIsUserDropdownOpen(false);
   };
 
   return (
-
-    <div className='user-buttons navbar-buttons'>
+    <div className="user-buttons navbar-buttons">
       {/* Botón de Publicar comic */}
       <button className="btn" onClick={handleShowPublish}>
         Publicar comic
@@ -50,14 +54,23 @@ const UserButtons = ({ handleLogout, onComicPublished }) => {
 
       {/* Botón de Usuario */}
       <div className="dropdown-wrapper">
-        <img src={userIcon} alt="..." className="icon-user" onClick={handleDropdownClick} />
+        <img
+          src={userIcon}
+          alt="..."
+          className="icon-user"
+          onClick={handleDropdownClick}
+        />
 
         {isUserDropdownOpen && (
           <div className="dropdown-menu">
-            <button className="dropdown-item" onClick={handleWishListClick}>Lista de deseos</button>
-              <div className="dropdown-divider"></div>
-            <button className="dropdown-item">Bandeja de ofertas</button>
-              <div className="dropdown-divider"></div>
+            <button className="dropdown-item" onClick={handleWishListClick}>
+              Lista de deseos
+            </button>
+            <div className="dropdown-divider"></div>
+            <button className="dropdown-item" onClick={handleOffersClick}>
+              Bandeja de ofertas
+            </button>
+            <div className="dropdown-divider"></div>
             <button className="dropdown-item" onClick={handleLogout}>
               Cerrar sesión
             </button>
@@ -66,10 +79,11 @@ const UserButtons = ({ handleLogout, onComicPublished }) => {
       </div>
 
       {/* Modal de Publicar comic */}
-      <PublishComicModal 
-        show={showPublish} 
-        handleClose={handleClosePublish} 
-        onComicPublished={onComicPublished} />
+      <PublishComicModal
+        show={showPublish}
+        handleClose={handleClosePublish}
+        onComicPublished={onComicPublished}
+      />
     </div>
   );
 };
